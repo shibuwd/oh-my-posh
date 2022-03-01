@@ -19,7 +19,9 @@ local function os_clock_millis()
     if (clink.version_encoded or 0) >= 10020030 then
         return math.floor(os.clock() * 1000)
     else
-        return io.popen(omp_exe().." --millis"):read("*n")
+        local prompt_exe = string.format('%s --millis', omp_exe())
+        prompt_exe = '"'..prompt_exe..'"'
+        return io.popen(prompt_exe):read("*n")
     end
 end
 
@@ -56,6 +58,7 @@ end
 
 local function get_posh_prompt(rprompt)
     local prompt_exe = string.format('%s --shell=cmd --config="%s" %s %s --rprompt=%s', omp_exe(), omp_config(), execution_time_option(), error_level_option(), rprompt)
+    prompt_exe = '"'..prompt_exe..'"'
     prompt = io.popen(prompt_exe):read("*a")
     return prompt
 end
